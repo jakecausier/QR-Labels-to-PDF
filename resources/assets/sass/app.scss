@@ -1,0 +1,59 @@
+
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+
+body {
+    background: rgb(204,204,204);
+}
+
+page[size="A4"] {
+    background: white;
+    width: 29.7cm;
+    height: 21cm;
+    display: block;
+    margin: 0 auto;
+    padding: 0.6cm 1.2cm;
+    box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+
+table {
+    width: 29.7cm;
+    height: 21cm;
+    margin: 0;
+    padding: 0;
+    border-spacing: 0.3cm 0.2cm;
+}
+
+tr {
+    height: 2.6cm;
+}
+
+.label-single {
+    width: 4.4cm;
+    height: 2.6cm;
+    background-color: #86af48;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.label-qr {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    background-color: #FFFFFF;
+}
+
+@media print {
+    body, page[size="A4"] {
+        margin: 0;
+        box-shadow: 0;
+        width: 29.7cm;
+        height: 21cm;
+    }
+    .no-print {
+        display: none;
+    }
+}
