@@ -22,9 +22,8 @@ Route::get('labels', function () {
     $labels = [];
 
     foreach (range(0,41) as $key => $new_label) {
-        $num_str = sprintf("%06d", mt_rand(1, 999999999));
+        $num_str = sprintf("%08d", mt_rand(1, 99999999));
         $labels[] = [
-                'title' => 'Lorem ' . ($key + 1),
                 'qr_id' => 'ei_' . $num_str,
         ];
     }
@@ -41,9 +40,8 @@ Route::get('/label-generate', function () {
     $labels = [];
 
     foreach (range(0,41) as $key => $new_label) {
-        $num_str = sprintf("%06d", mt_rand(1, 999999999));
+        $num_str = sprintf("%08d", mt_rand(1, 99999999));
         $labels[] = [
-                'title' => 'Lorem ' . ($key + 1),
                 'qr_id' => 'ei_' . $num_str,
         ];
     }
@@ -52,6 +50,14 @@ Route::get('/label-generate', function () {
 
     /* Creates the PDF using the generated data above */
 
-    $pdf = PDF::loadView('pdf.labels', compact('rows'))->setPaper('a4')->setOrientation('landscape')->setOption('enable-javascript', true)->setOption('javascript-delay', 5000);
+    $pdf = PDF::loadView('pdf.labels', compact('rows')) ->setPaper('a4')
+                                                        ->setOrientation('landscape')
+                                                        ->setOption('margin-top', '0mm')
+                                                        ->setOption('margin-bottom', '0mm')
+                                                        ->setOption('margin-left', '0mm')
+                                                        ->setOption('margin-right', '0mm')
+                                                        ->setOption('disable-smart-shrinking', true)
+                                                        ->setOption('print-media-type', true)
+                                                        ;
     return $pdf->download('Labels_Printable.pdf');
 })->name('labels.generate');
