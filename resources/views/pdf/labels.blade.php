@@ -8,56 +8,75 @@
         @component('partials.print-style')
         @endcomponent
 
-
     </head>
 
+    @php
+      $num_rows = 7;
+      $row_chunks = array_chunk($rows, $num_rows);
+    @endphp
+
+    <div class="ui-box top noprint">
+        <span>Change the values in the URL to generate labels</span>
+    </div>
+
+    <div class="ui-box bottom noprint">
+        <span>{{ $request->length }} labels across {{ count($row_chunks) }} pages</span>
+        <a href="{{ route('labels.generate', ['start' => $request->start, 'length' => $request->length]) }}">Generate PDF</a>
+    </div>
+
     <body class="A4 landscape">
-    <section class="sheet">
-        <table class="labels">
-            <tbody>
-                @foreach ($rows as $row_key => $row)
-                    <tr class="row-{{ $row_key + 1}}">
-                        @foreach ($row as $label_key => $label)
-                            <td class="label-single">
-                                <div class="label-qr">
-                                    <img src="{{ url( DNS2D::getBarcodePNGPath( $label['qr_id'], "QRCODE", 4, 4) ) }}">
-                                </div>
+        @foreach ($row_chunks as $key => $page)
+          <section class="sheet">
 
-                                <div class="label-logo-b2">
-                                    <img src="{{ url('img/logos/b2.png') }}"/>
-                                </div>
+              <table class="labels">
+                  <tbody>
+                      @foreach ($page as $row_key => $row)
+                          <tr class="row-{{ $row_key + 1}}">
+                              @foreach ($row as $label_key => $label)
+                                  <td class="label-single">
+                                      <div class="label-qr">
+                                          <img src="{{ url( DNS2D::getBarcodePNGPath( $label['qr_id'], "QRCODE", 4, 4) ) }}">
+                                      </div>
 
-                                <div class="label-logo-ei">
-                                    <img src="{{ url('img/logos/ei.png') }}"/>
-                                </div>
+                                      <div class="label-logo-b2">
+                                          <img src="{{ url('img/logos/b2.png') }}"/>
+                                      </div>
 
-                                <div class="label-text-id">
-                                    <span><strong>Item ID:</strong> {{ substr($label['qr_id'], 3) }}</span>
-                                </div>
+                                      <div class="label-logo-ei">
+                                          <img src="{{ url('img/logos/ei.png') }}"/>
+                                      </div>
 
-                                <div class="cutoff">
-                                    <span><strong>Item ID:</strong> {{ substr($label['qr_id'], 3) }}</span>
-                                </div>
+                                      <div class="label-text-id">
+                                          <span><strong>Item ID:</strong> {{ substr($label['qr_id'], 3) }}</span>
+                                      </div>
 
-                                <div class="label-logo-cutoff-b2">
-                                    <img src="{{ url('img/logos/b2.png') }}"/>
-                                </div>
+                                      <div class="cutoff">
+                                          <span><strong>Item ID:</strong> {{ substr($label['qr_id'], 3) }}</span>
+                                      </div>
 
-                                <div class="label-logo-cutoff-ei">
-                                    <img src="{{ url('img/logos/ei.png') }}"/>
-                                </div>
-                            </td>
-                        @endforeach
-                    </tr>
-                @endforeach
+                                      <div class="label-logo-cutoff-b2">
+                                          <img src="{{ url('img/logos/b2.png') }}"/>
+                                      </div>
 
-            </tbody>
-        </table>
-    </section>
+                                      <div class="label-logo-cutoff-ei">
+                                          <img src="{{ url('img/logos/ei.png') }}"/>
+                                      </div>
+                                  </td>
+                              @endforeach
+                          </tr>
+                      @endforeach
 
-        <div class="ui-box noprint">
-            <a href="{{ route('labels.generate') }}">Generate PDF</a>
-        </div>
+                  </tbody>
+              </table>
+
+              <div class="page-info">
+                  <div>Page {{ $key + 1 }} of {{ count($row_chunks) }}</div>
+                  <div>Labels {{ $request->start + 42 * $key }} to {{ min(($request->start - 1) + (42 * ($key + 1)), ($request->length + ($request->start - 1))) }}</div>
+              </div>
+
+          </section>
+
+        @endforeach
 
     </body>
 </html>

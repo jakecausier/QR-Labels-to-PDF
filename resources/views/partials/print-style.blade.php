@@ -27,10 +27,13 @@
 
     /** For screen preview **/
     @media screen {
+      html, body {
+        background: #333;
+      }
       .sheet {
-        background: white;
         box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
-        margin: 5mm;
+        margin: calc((100vh - 209mm) / 2) auto;
+        background: white;
       }
     }
 
@@ -40,6 +43,9 @@
       body.A3, body.A4.landscape { width: 297mm }
       body.A4, body.A5.landscape { width: 210mm }
       body.A5                    { width: 148mm }
+      body {
+        background: white;
+      }
     }
 
     @page {
@@ -47,22 +53,29 @@
     }
 
     body {
-      background: white;
       font-family: 'Helvetica', sans-serif;
       font-size: 8px;
       color: black;
     }
 
     table {
-      width: 100%;
-      height: 100%;
       margin: 0;
       padding: 0.4cm 0.8cm 0.2cm 1cm;
-      border-spacing: 0.3cm 0.2cm;
+      border-spacing: 0.18cm 0.25cm
     }
 
     tr {
-      height: 2.6cm;
+      min-height: 2.6cm;
+    }
+
+    .labels-grid {
+      height: 100%;
+      margin: 0;
+      padding: 0.6cm 0.8cm 0.2cm 1.2cm;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      grid-gap: 0.25cm 0.2cm;
     }
 
     .label-single {
@@ -71,13 +84,17 @@
       position: relative;
       padding: 0;
       margin: 0;
-      opacity: 0;
+      opacity: 1;
+    }
+
+    .labels-grid .label-single {
+      opacity: 1;
     }
 
     .label-single .label-qr {
       position: absolute;
-      top: 0.01cm;
-      left: 0;
+      top: 0.2cm;
+      left: 0.3cm;
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
@@ -87,11 +104,13 @@
       -webkit-box-pack: center;
           -ms-flex-pack: center;
               justify-content: center;
-      width: 2.6cm;
-      height: 2.6cm;
+      width: 2.15cm;
+      height: 2.15cm;
     }
 
     .label-single .label-qr img {
+      width: 100%;
+      height: 100%;
       -ms-interpolation-mode: nearest-neighbor;
           image-rendering: -webkit-optimize-contrast;
           image-rendering: -moz-crisp-edges;
@@ -178,17 +197,56 @@
       height: auto;
     }
 
+    .page-info {
+      -webkit-transform: rotate(-90deg);
+              transform: rotate(-90deg);
+      position: absolute;
+      display: flex;
+      justify-content: space-between;
+      top: 100mm;
+      left: -85mm;
+      width: 192mm;
+      height: 0.8cm;
+      font-size: 10pt;
+      color: rgba(0,0,0,0.8);
+    }
+
     .ui-box {
       float: right;
-      position: absolute;
+      position: fixed;
+      display: flex !important;
+      justify-content: space-between;
       z-index: 999;
-      right: 10px;
-      bottom: 10px;
-      width: auto;
+      right: calc(50vw / 2);
+      width: 50vw;
       height: auto;
       background-color: white;
       padding: 20px;
+      text-align: center;
       font-size: 12px;
+      box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+      opacity: 0.25;
+      transition: opacity .2s;
+    }
+
+    .ui-box.bottom {
+      bottom: 0.4cm;
+    }
+
+    .ui-box.top {
+      top: 0.4cm;
+    }
+
+    .ui-box:hover {
+      opacity: 1;
+      transition: opacity .2s;
+    }
+
+    @media (max-width: 297mm) {
+      .ui-box {
+        width: calc(100vw - 50px);
+        right: 0;
+      }
     }
 
     @media screen {
@@ -212,16 +270,16 @@
       }
     }
 
-    @php
-        $row_num = 1;
-        $label_num = 3;
-    @endphp
-
     /*  PRINTING LABELS MANUALLY
      *      Use NUMBER for just a single label
      *      Use -n+NUMBER for all labels from the start of the row up to that number
      *      Use n+NUMBER for all labels from that number to the end of the row
      */
+
+     @php
+       $row_num = 1;
+       $label_num = 1;
+     @endphp
 
     .row-{{ $row_num }} .label-single:nth-of-type(n+{{ $label_num }}) {
         opacity: 1;
@@ -235,5 +293,31 @@
     .row-7 .label-single {
         opacity: 1;
     }
+
+    /*  Push last four rows down more and more for each one  */
+    /*  Push last four columns over to the right more and more  */
+
+
+    .row-5 .label-single {
+      top: 0.1cm;
+    }
+    .row-6 .label-single {
+      top: 0.1cm;
+    }
+    .row-7 .label-single {
+      top: 0.1cm;
+    }
+
+    [class^="row-"] .label-single:nth-of-type(4) {
+      left: 0.1cm;
+    }
+    [class^="row-"] .label-single:nth-of-type(5) {
+      left: 0.15cm;
+    }
+    [class^="row-"] .label-single:nth-of-type(6) {
+      left: 0.2cm;
+    }
+
+
 
 </style>
