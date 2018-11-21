@@ -201,8 +201,6 @@
       -webkit-transform: rotate(-90deg);
               transform: rotate(-90deg);
       position: absolute;
-      display: flex;
-      justify-content: space-between;
       top: 100mm;
       left: -85mm;
       width: 192mm;

@@ -20,8 +20,13 @@
     </div>
 
     <div class="ui-box bottom noprint">
-        <span>{{ $request->length }} labels across {{ count($row_chunks) }} pages</span>
-        <a href="{{ route('labels.generate', ['start' => $request->start, 'length' => $request->length]) }}">Generate PDF</a>
+        @if ($request->pages)
+          <span>{{ count($row_chunks) * 42 }} labels across {{ count($row_chunks) }} pages</span>
+        @else
+          <span>{{ $request->length }} labels across {{ count($row_chunks) }} pages</span>
+        @endif
+
+        <a href="{{ route('labels.generate', ['start' => $request->start, 'length' => $request->length, 'pages' => $request->pages]) }}">Generate PDF</a>
     </div>
 
     <body class="A4 landscape">
@@ -70,8 +75,11 @@
               </table>
 
               <div class="page-info">
-                  <div>Page {{ $key + 1 }} of {{ count($row_chunks) }}</div>
-                  <div>Labels {{ $request->start + 42 * $key }} to {{ min(($request->start - 1) + (42 * ($key + 1)), ($request->length + ($request->start - 1))) }}</div>
+                @if ($request->pages)
+                  Page {{ $key + 1 }} of {{ count($row_chunks) }}  --  Labels {{ $request->start + 42 * $key }} to {{ (42 * ($key + 1)) }}
+                @else
+                  Page {{ $key + 1 }} of {{ count($row_chunks) }}  --  Labels {{ $request->start + 42 * $key }} to {{ min(($request->start - 1) + (42 * ($key + 1)), ($request->length + ($request->start - 1))) }}
+                @endif
               </div>
 
           </section>

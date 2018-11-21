@@ -29,13 +29,24 @@ class LabelsController extends Controller
     {
         $start = $request->start;
         $length = $request->length;
+        $pages = $request->pages;
 
-        foreach (range($start, $start + $length - 1) as $key => $new_label) {
-            $num_str = sprintf("%08d", $start);
-            $labels[] = [
-                    'qr_id' => 'ei_' . $num_str,
-            ];
-            $start++;
+        if ($pages) {
+            foreach (range($start, ($start + ($pages * 42)) - 1 ) as $key => $new_label) {
+                $num_str = sprintf("%08d", $start);
+                $labels[] = [
+                        'qr_id' => 'ei_' . $num_str,
+                ];
+                $start++;
+            }
+        } else {
+            foreach (range($start, $start + $length - 1) as $key => $new_label) {
+                $num_str = sprintf("%08d", $start);
+                $labels[] = [
+                        'qr_id' => 'ei_' . $num_str,
+                ];
+                $start++;
+            }
         }
 
         $rows = array_chunk($labels, 6);
@@ -54,16 +65,30 @@ class LabelsController extends Controller
     {
         $start = $request->start;
         $length = $request->length;
+        $pages = $request->pages;
 
-        foreach (range($start, $start + $length - 1) as $key => $new_label) {
-            $num_str = sprintf("%08d", $start);
-            $labels[] = [
-                    'qr_id' => 'ei_' . $num_str,
-            ];
-            $start++;
+        if ($pages) {
+            foreach (range($start, ($start + ($pages * 42)) - 1 ) as $key => $new_label) {
+                $num_str = sprintf("%08d", $start);
+                $labels[] = [
+                        'qr_id' => 'ei_' . $num_str,
+                ];
+                $start++;
+            }
+        } else {
+            foreach (range($start, $start + $length - 1) as $key => $new_label) {
+                $num_str = sprintf("%08d", $start);
+                $labels[] = [
+                        'qr_id' => 'ei_' . $num_str,
+                ];
+                $start++;
+            }
         }
 
         $rows = array_chunk($labels, 6);
+
+        $date_stamp = date("d-m-Y");
+        $time_stamp = date("H-i-s");
 
         $pdf = PDF::loadView('pdf.labels', compact('rows', 'request')) ->setPaper('a4')
                                                             ->setOrientation('landscape')
@@ -74,7 +99,7 @@ class LabelsController extends Controller
                                                             ->setOption('disable-smart-shrinking', true)
                                                             ->setOption('print-media-type', true)
                                                             ;
-        return $pdf->download('Labels_Printable.pdf');
+        return $pdf->download('Labels_Printable_' . $date_stamp . '_' . $time_stamp . '.pdf');
     }
 
 }
